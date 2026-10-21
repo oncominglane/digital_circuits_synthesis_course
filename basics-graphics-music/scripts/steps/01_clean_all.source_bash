@@ -1,0 +1,28 @@
+. "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/00_setup.source_bash"
+
+count=0
+
+while read file
+do
+    dir=$(readlink -f "$(dirname "$file")/run")
+
+    if [ -d "$dir" ]
+    then
+        info "cleaning up: \"$dir\""
+        rm -rf "$dir"
+        count=`expr $count + 1`
+    fi
+done <<< $($find_to_run "$lab_dir" -name '*synthesize_for_fpga.bash')
+
+if [ "$count" == 0 ]
+then
+    info "nothing to clean in lab directories"
+else
+    info "cleaned $count lab dirs"
+fi
+
+rm -rf \
+    "$package_dir/fpga_board_selection" \
+    "$package_dir/riscv_core_selection" \
+    "$package_dir/last_uart_port"       \
+    "$package_dir/run"
