@@ -27,6 +27,7 @@ module mux_2_1_width_2
 
   assign y =   (d0 & { 2 { ~ sel }})
              | (d1 & { 2 {   sel }});
+  // {2{sdl}} - запись повторения, аналогична {sel, sel}
 
 endmodule
 
@@ -48,6 +49,9 @@ module mux_4_1_width_1
              | (d1 & sel1)
              | (d2 & sel2)
              | (d3 & sel3);
+  
+  // данные & 1111 = данные
+  // данные & 0000 = 0000
 
 endmodule
 
@@ -66,6 +70,17 @@ module mux_4_1
   // Using code for mux_2_1_width_1, mux_2_1_width_2,
   // mux_4_1_width_1 as examples,
   // write code for 4:1 mux using only &, | and ~ operations.
+  wire sel0, sel1, sel2, sel3;
 
+  assign sel0 = ~sel[1] & ~sel[0];
+  assign sel1 = ~sel[1] &  sel[0];
+  assign sel2 =  sel[1] & ~sel[0];
+  assign sel3 =  sel[1] &  sel[0];
+  // среди этих четырех только 1 равен 1, остальные 0
+
+  assign y = (d0 & {4{sel0}})
+           | (d1 & {4{sel1}})
+           | (d2 & {4{sel2}})
+           | (d3 & {4{sel3}});
 
 endmodule
